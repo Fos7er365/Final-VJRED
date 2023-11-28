@@ -119,6 +119,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
     {
         if (charactersDictionary.ContainsKey(client))
         {
+            Debug.Log("paso a master manager pidiendo jump");
             var character = charactersDictionary[client];
             //character.LookDir(dir);
             character.Jump();

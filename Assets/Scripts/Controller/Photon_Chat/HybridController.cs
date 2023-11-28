@@ -50,6 +50,7 @@ public class HybridController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            Debug.Log("Intento Jump");
             MasterManager.Instance.RequestJump(PhotonNetwork.LocalPlayer);
             MasterManager.Instance.RequestJumpAnim(PhotonNetwork.LocalPlayer);
         }

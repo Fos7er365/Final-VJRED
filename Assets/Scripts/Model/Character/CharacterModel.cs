@@ -10,10 +10,12 @@ public class CharacterModel : MonoBehaviourPun
     public float speed, movementMultiplier, jumpForce;
     public float rotSpeed, rbDrag;
     public GameObject cameraHolder;
+    public Transform orientation;
     public CharacterView view;
     Rigidbody _rb;
     GameManager gameManagerInstance;
-    bool isGrounded;
+    public bool isGrounded;
+    public bool groundedTest;
 
     [Header("Ground Detection")]
     [SerializeField] LayerMask groundMask;
@@ -51,8 +53,8 @@ public class CharacterModel : MonoBehaviourPun
     public void Move(float h, float v)
     {
         view.Anim.RunAnimation(true);
-        movementDirection = transform.forward * v + transform.right * h;
-        _rb.AddForce(movementDirection.normalized * speed * movementMultiplier, ForceMode.Acceleration);
+        movementDirection = orientation.forward * v + orientation.right * h;
+        _rb.AddForce(movementDirection.normalized * speed * movementMultiplier, ForceMode.Force);
     }
 
     public void LookDir(Vector3 dir)
@@ -62,7 +64,11 @@ public class CharacterModel : MonoBehaviourPun
 
     public bool CheckGround()
     {
-        return isGrounded = Physics.Raycast(transform.position, -transform.up, groundDistance, groundMask);
+
+        return isGrounded;
+
+
+        //Physics.Raycast(transform.position, Vector3.down, 5f * 0.5f + 0.2f, groundMask);
     }
 
     public void Jump()
