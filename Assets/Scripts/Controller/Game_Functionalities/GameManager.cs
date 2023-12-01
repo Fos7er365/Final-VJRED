@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 Debug.Log("Inicio juego");
                 photonView.RPC("StartGame", RpcTarget.All);
-                photonView.RPC("InstantiateGoal", RpcTarget.All);
+                photonView.RPC("InstantiateGoal", PhotonNetwork.LocalPlayer);
             }
         }
         
@@ -121,17 +121,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region RPC's
-
     [PunRPC]
-    void LoadWinScene()
+    void InstantiateGoal()
     {
-        SceneManager.LoadScene("Win");
-    }
-
-    [PunRPC]
-    void LoadGameOverScene()
-    {
-        SceneManager.LoadScene("Game_Over");
+        var sp = GetRandomSpawnpoint();
+        GameObject go = PhotonNetwork.Instantiate("GoalPoint", sp.position, Quaternion.identity);
     }
 
     #endregion
