@@ -9,13 +9,13 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] TextMeshProUGUI gameTimer;
+    [SerializeField] Transform[] goalPointSpawnSeeds;
 
     float timeLeft = 200, syncTimer = 0, timeToSync = 3f;
 
     bool isGameStarted;
     bool isVictory = false, isDefeat = false;
 
-    GameObject[] goalPointSpawnSeeds;
     //Instantiator charInstantiator;
 
     #region Singleton
@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.IsMasterClient && Camera.main.gameObject != null) Destroy(Camera.main.gameObject);
             GameManagerInstance = this;
-            //gameTimer.enabled = false;
+            gameTimer.enabled = false;
             //charInstantiator = GetComponent<Instantiator>();
         }
     }
@@ -53,6 +53,28 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.IsMasterClient) WaitToSync();
         }
     }
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
+        Debug.Log("Cant de players: " + playerCount);
+        gameTimer.text = timeLeft.ToString();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("Chequeo juego iniciado");
+            if (!isGameStarted && playerCount > PhotonNetwork.CurrentRoom.MaxPlayers - 1)
+            {
+                Debug.Log("Inicio juego");
+                photonView.RPC("StartGame", RpcTarget.All);
+                photonView.RPC("InstantiateGoal", RpcTarget.All);
+            }
+        }
+        
+
+    }
+    public Transform GetRandomSpawnpoint()
+    {
+        return goalPointSpawnSeeds[UnityEngine.Random.Range(0, goalPointSpawnSeeds.Length - 1)];
+    }
     public void SetManager(CharacterModel model)
     {
         model.SetManager = this;
@@ -60,10 +82,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void StartGame()
     {
-        //isGameStarted = true;
-        //gameTimer.enabled = true;
+        isGameStarted = true;
+        gameTimer.enabled = true;
 
     }
+
+    #region Timer handling methods
+
     void UpdateGameTimer()
     {
 
@@ -92,6 +117,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         timeLeft = _timer;
     }
+
+    #endregion
 
     #region RPC's
 
