@@ -16,6 +16,8 @@ public class CharacterModel : MonoBehaviourPun
     GameManager gameManagerInstance;
     public bool isGrounded;
     public bool groundedTest;
+    public float cd;
+    float lastJump;
 
     [Header("Ground Detection")]
     [SerializeField] LayerMask groundMask;
@@ -73,11 +75,13 @@ public class CharacterModel : MonoBehaviourPun
 
     public void Jump()
     {
-        if (isGrounded)
+        if (Time.time-lastJump<cd)
         {
-            _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
-            _rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            return;
         }
+        lastJump = Time.time;
+        _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
+        _rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 }
 
