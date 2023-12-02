@@ -138,7 +138,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void SetWinEvent(Player client)
     {
-            RPC("LoadWinScene")
+            //RPC("LoadWinScene")
     }
 
     [PunRPC]
