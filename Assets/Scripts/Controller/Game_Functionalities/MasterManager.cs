@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using TMPro;
 using TMPro.Examples;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MasterManager : MonoBehaviourPunCallbacks
 {
@@ -132,6 +133,30 @@ public class MasterManager : MonoBehaviourPunCallbacks
     public void RPC(string name, Player target, params object[] p) //Nuevo RPC para HYBRID
     {
         photonView.RPC(name, target, p);
+    }
+
+    [PunRPC]
+    void SetWinEvent(Player client)
+    {
+            RPC("LoadWinScene")
+    }
+
+    [PunRPC]
+    void SetGameOverEvent()
+    {
+        
+    }
+
+    [PunRPC]
+    void LoadWinScene()
+    {
+        SceneManager.LoadScene("Win");
+    }
+
+    [PunRPC]
+    void LoadGameOverScene()
+    {
+        SceneManager.LoadScene("Game_Over");
     }
 
     #region Métodos de Remove Player/Model, hay que setearlos y eliminar al player en todos los clientes al morir

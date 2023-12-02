@@ -15,8 +15,9 @@ public class Endpoint : MonoBehaviourPun
             if (other.tag == "Player")
             {
                 var pv = other.GetComponent<PhotonView>();
-                MasterManager.Instance.RPCMaster("WinGame", pv.Owner);
-                MasterManager.Instance.RPCMaster("LoseGame", RpcTarget.Others);
+                Debug.Log("Colisiono con" + pv.Owner);
+                MasterManager.Instance.RPC("SetWinEvent", PhotonNetwork.MasterClient);
+                MasterManager.Instance.RPC("SetGameOverEvent", PhotonNetwork.MasterClient);
                 //photonView.RPC("DestroyBullet", photonView.Owner);
                 PhotonNetwork.Destroy(gameObject);
             }

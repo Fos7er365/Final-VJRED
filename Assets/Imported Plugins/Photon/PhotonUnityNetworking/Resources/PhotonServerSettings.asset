@@ -84,6 +84,9 @@ MonoBehaviour:
   - RequestJumpAnim
   - RequestStopJumpAnim
   - RequestStopMovingAnim
+  - InstantiateGoal
+  - SetGameOverEvent
+  - SetWinEvent
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
