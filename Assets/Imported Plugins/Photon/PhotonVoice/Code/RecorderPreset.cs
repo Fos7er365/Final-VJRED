@@ -20,7 +20,6 @@ namespace Photon.Voice.Unity
         public RuntimePlatform Platform;
         [Tooltip("Which microphone API to use when the Source is set to Microphone.")]
         [Header("Overrides:")]
-        [Space(-10)]
         public MicType MicrophoneType;
         [Tooltip("Enable WebRtcAudioDsp component.")]
         public bool DSPEnabled;
@@ -60,10 +59,6 @@ namespace Photon.Voice.Unity
                     }
                 }
             }
-        }
-
-        void Update()
-        {
         }
     }
 }

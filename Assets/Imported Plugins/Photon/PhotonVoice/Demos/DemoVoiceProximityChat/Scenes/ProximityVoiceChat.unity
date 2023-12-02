@@ -322,10 +322,10 @@ MonoBehaviour:
   frameDuration: 20000
   bitrate: 30000
   sourceType: 1
-  microphoneType: 0
+  microphoneType: 1
   audioClip: {fileID: 8300000, guid: 52ffbccca1224d143a6bbbca626ae566, type: 3}
   loopAudioClip: 1
-  autoStart: 0
+  recordingEnabled: 1
   audioSessionParameters:
     Category: 4
     Mode: 0
@@ -338,7 +338,7 @@ MonoBehaviour:
   stopRecordingWhenPaused: 0
   useOnAudioFilterRead: 0
   useMicrophoneTypeFallback: 1
-  recordOnlyWhenJoined: 1
+  recordWhenJoined: 1
 --- !u!114 &1425598450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -360,7 +360,6 @@ MonoBehaviour:
     type: 3}
   primaryRecorder: {fileID: 1425598449}
   usePrimaryRecorder: 0
-  globalPlaybackDelay: -1
   Settings:
     AppIdRealtime: 
     AppIdFusion: 

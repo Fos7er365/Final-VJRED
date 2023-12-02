@@ -387,15 +387,15 @@ MonoBehaviour:
   debugEchoMode: 0
   reliableMode: 0
   encrypt: 0
-  transmitEnabled: 0
+  transmitEnabled: 1
   samplingRate: 24000
   frameDuration: 20000
   bitrate: 30000
   sourceType: 0
-  microphoneType: 0
+  microphoneType: 1
   audioClip: {fileID: 0}
   loopAudioClip: 1
-  autoStart: 1
+  recordingEnabled: 1
   audioSessionParameters:
     Category: 4
     Mode: 0
@@ -408,7 +408,7 @@ MonoBehaviour:
   stopRecordingWhenPaused: 0
   useOnAudioFilterRead: 0
   useMicrophoneTypeFallback: 1
-  recordOnlyWhenJoined: 1
+  recordWhenJoined: 1
 --- !u!4 &1334580851
 Transform:
   m_ObjectHideFlags: 0
@@ -437,7 +437,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RandomRoom: 1
   autoConnect: 1
-  autoTransmit: 1
   publishUserId: 0
   RoomName: 
 --- !u!114 &1334580853
@@ -461,7 +460,6 @@ MonoBehaviour:
     type: 3}
   primaryRecorder: {fileID: 1334580849}
   usePrimaryRecorder: 0
-  globalPlaybackDelay: 200
   Settings:
     AppIdRealtime: 
     AppIdFusion: 

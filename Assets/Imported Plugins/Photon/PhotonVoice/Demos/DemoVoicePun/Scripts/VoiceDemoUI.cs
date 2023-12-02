@@ -11,7 +11,7 @@
 #if PUN_2_OR_NEWER
 
 using System;
-using Photon.Voice.Unity;
+using Photon.Realtime;
 using Photon.Voice.PUN;
 
 #pragma warning disable 0649 // Field is never assigned to, and will always have its default value
@@ -22,16 +22,17 @@ namespace ExitGames.Demos.DemoPunVoice
     using UnityEngine;
     using UnityEngine.UI;
     using Client.Photon;
+    using System.Linq;
 
 #if !UNITY_EDITOR && UNITY_PS4
     using Sony.NP;
-#elif !UNITY_EDITOR && UNITY_SHARLIN
+#elif !UNITY_EDITOR && UNITY_PS5
     using System.Runtime.InteropServices;
 #endif
 
     public class VoiceDemoUI : MonoBehaviour
     {
-#if !UNITY_EDITOR && UNITY_SHARLIN
+#if !UNITY_EDITOR && UNITY_PS5
     [DllImport("PhotonVoiceLocalUserIDPlugin")]
     private static extern int egpvgetLocalUserID(); // returns the user ID of the user at index 0 in the list of local users
 #endif
@@ -113,18 +114,10 @@ namespace ExitGames.Demos.DemoPunVoice
         private void Awake()
         {
             this.punVoiceClient = PunVoiceClient.Instance;
+            Debug.LogWarning("VoiceDemoUI selected a punVoiceClient.Instance", this.punVoiceClient);
         }
 
-        private void OnEnable()
-        {
-            ChangePOV.CameraChanged += this.OnCameraChanged;
-            BetterToggle.ToggleValueChanged += this.BetterToggle_ToggleValueChanged;
-            CharacterInstantiation.CharacterInstantiated += this.CharacterInstantiation_CharacterInstantiated;
-            this.punVoiceClient.Client.StateChanged += this.VoiceClientStateChanged;
-            PhotonNetwork.NetworkingClient.StateChanged += this.PunClientStateChanged;
-        }
-
-        private void OnDisable()
+        private void OnDestroy()
         {
             ChangePOV.CameraChanged -= this.OnCameraChanged;
             BetterToggle.ToggleValueChanged -= this.BetterToggle_ToggleValueChanged;
@@ -182,10 +175,6 @@ namespace ExitGames.Demos.DemoPunVoice
                     case "AutoConnectAndJoin":
                         toggle.isOn = this.punVoiceClient.AutoConnectAndJoin;
                         break;
-
-                    case "AutoLeaveAndDisconnect":
-                        toggle.isOn = this.punVoiceClient.AutoLeaveAndDisconnect;
-                        break;
                 }
             }
         }
@@ -231,9 +220,6 @@ namespace ExitGames.Demos.DemoPunVoice
                 case "AutoConnectAndJoin":
                     this.punVoiceClient.AutoConnectAndJoin = toggle.isOn;
                     break;
-                case "AutoLeaveAndDisconnect":
-                    this.punVoiceClient.AutoLeaveAndDisconnect = toggle.isOn;
-                    break;
             }
         }
 
@@ -244,6 +230,13 @@ namespace ExitGames.Demos.DemoPunVoice
 
         private void Start()
         {
+            ChangePOV.CameraChanged += this.OnCameraChanged;
+            BetterToggle.ToggleValueChanged += this.BetterToggle_ToggleValueChanged;
+            CharacterInstantiation.CharacterInstantiated += this.CharacterInstantiation_CharacterInstantiated;
+            this.punVoiceClient.Client.StateChanged += this.VoiceClientStateChanged;
+            PhotonNetwork.NetworkingClient.StateChanged += this.PunClientStateChanged;
+
+
             this.canvas = this.GetComponentInChildren<Canvas>();
             if (this.punSwitch != null)
             {
@@ -273,25 +266,29 @@ namespace ExitGames.Demos.DemoPunVoice
             }
             if (this.devicesInfoText != null)
             {
-                if (UnityMicrophone.devices == null || UnityMicrophone.devices.Length == 0)
+                using (var unityMicEnum = new Photon.Voice.Unity.AudioInEnumerator(this.punVoiceClient.Client))
                 {
-                    this.devicesInfoText.enabled = true;
-                    this.devicesInfoText.color = Color.red;
-                    this.devicesInfoText.text = "No microphone device detected!";
-                }
-                else if (UnityMicrophone.devices.Length == 1)
-                {
-                    this.devicesInfoText.text = string.Format("Mic.: {0}", UnityMicrophone.devices[0]);
-                }
-                else
-                {
-                    this.devicesInfoText.text = string.Format("Multi.Mic.Devices:\n0. {0} (active)\n", UnityMicrophone.devices[0]);
-                    for (int i = 1; i < UnityMicrophone.devices.Length; i++)
+                    using (var photonMicEnum = Photon.Voice.Platform.CreateAudioInEnumerator(this.punVoiceClient.Client))
                     {
-                        this.devicesInfoText.text = string.Concat(this.devicesInfoText.text, string.Format("{0}. {1}\n", i, UnityMicrophone.devices[i]));
+                        if (unityMicEnum.Count() + photonMicEnum.Count() == 0)
+                        {
+                            this.devicesInfoText.enabled = true;
+                            this.devicesInfoText.color = Color.red;
+                            this.devicesInfoText.text = "No microphone device detected!";
+                        }
+                        else
+                        {
+                            this.devicesInfoText.text = "Mic Unity: " + string.Join(", ", unityMicEnum.Select(x => x.ToString()));
+                            this.devicesInfoText.text += "\nMic Photon: " + string.Join(", ", photonMicEnum.Select(x => x.ToString()));
+                        }
                     }
                 }
             }
+
+            
+            this.VoiceClientStateChanged(ClientState.PeerCreated, this.punVoiceClient.ClientState);
+            this.PunClientStateChanged(ClientState.PeerCreated, PhotonNetwork.NetworkingClient.State);
+
 
 #if !UNITY_EDITOR && UNITY_PS4
             UserProfiles.LocalUsers localUsers = new UserProfiles.LocalUsers();
@@ -299,7 +296,7 @@ namespace ExitGames.Demos.DemoPunVoice
             int userID = localUsers.LocalUsersIds[0].UserId.Id;
 
             punVoiceClient.PlayStationUserID = userID;
-#elif !UNITY_EDITOR && UNITY_SHARLIN
+#elif !UNITY_EDITOR && UNITY_PS5
             punVoiceClient.PlayStationUserID = egpvgetLocalUserID();
 #endif
         }
@@ -427,8 +424,8 @@ namespace ExitGames.Demos.DemoPunVoice
 
         protected void OnApplicationQuit()
         {
-            this.punVoiceClient.Client.Disconnect();
-            this.punVoiceClient.Client.LoadBalancingPeer.StopThread();
+            this.punVoiceClient.Client.StateChanged -= this.VoiceClientStateChanged;
+            PhotonNetwork.NetworkingClient.StateChanged -= this.PunClientStateChanged;
         }
     }
 }

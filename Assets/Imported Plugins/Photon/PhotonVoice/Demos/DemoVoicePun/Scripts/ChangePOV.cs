@@ -66,7 +66,7 @@ namespace ExitGames.Demos.DemoPunVoice
                 this.defaultCamera.transform.rotation.y, this.defaultCamera.transform.rotation.z,
                 this.defaultCamera.transform.rotation.w);
             //Check if we are running either in the Unity editor or in a standalone build.
-#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_PS4 || UNITY_XBOXONE || UNITY_SWITCH || UNITY_PS5 || UNITY_GAMECORE
             this.FirstPersonCamActivator.onClick.AddListener(this.FirstPersonMode);
 #else
             this.FirstPersonCamActivator.gameObject.SetActive(false);
@@ -83,6 +83,9 @@ namespace ExitGames.Demos.DemoPunVoice
             this.thirdPersonController.enabled = false;
             this.orthographicController = character.GetComponent<OrthographicController>();
             this.ButtonsHolder.SetActive(true);
+#if (UNITY_PS4 || UNITY_XBOXONE || UNITY_SWITCH || UNITY_PS5 || UNITY_GAMECORE) && !UNITY_EDITOR
+            FirstPersonMode();
+#endif
         }
 
         private void FirstPersonMode()
@@ -155,7 +158,10 @@ namespace ExitGames.Demos.DemoPunVoice
 
         public void OnLeftRoom()
         {
-            this.defaultCamera.gameObject.SetActive(true);
+            if (this.defaultCamera)
+            {
+                this.defaultCamera.gameObject.SetActive(true);
+            }
             this.FirstPersonCamActivator.interactable = true;
             this.ThirdPersonCamActivator.interactable = true;
             this.OrthographicCamActivator.interactable = false;

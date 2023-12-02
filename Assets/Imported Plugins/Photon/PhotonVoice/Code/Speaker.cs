@@ -22,17 +22,24 @@ namespace Photon.Voice.Unity
 
         protected IAudioOut<float> audioOutput;
 
+#if UNITY_WEBGL && UNITY_2021_2_OR_NEWER && !UNITY_EDITOR // requires ES6, allows non-WebGL workflow in Editor
+        // apply AudioSource parameters, Speaker position and AudioListener transform to WebAudioAudioOut
+        private WebAudioAudioOut webOut;           // not null if WebAudio is supported
+        private AudioSource webOutAudioSource;     // not null if WebAudio is supported and AudioSource exists, we apply its volume and spatial blend to WebAudioAudioOut
+        private Transform webOutListenerTransform; // not null if WebAudio is supported, AudioListener exists and initial spatialBlend > 0 (3D enabled)
+#endif
+
         [SerializeField]
         protected AudioOutDelayControl.PlayDelayConfig playDelayConfig = AudioOutDelayControl.PlayDelayConfig.Default;
 
         [SerializeField]
         protected bool restartOnDeviceChange = true;
 
-        #endregion
+#endregion
 
-        #region Public Fields
+#region Public Fields
 
-#if UNITY_PS4 || UNITY_SHARLIN
+#if UNITY_PS4 || UNITY_PS5
         /// <summary>Set the PlayStation User ID to determine on which users headphones to play audio.</summary>
         /// <remarks>
         /// Note: at the moment, only the first Speaker can successfully set the User ID.
@@ -40,9 +47,9 @@ namespace Photon.Voice.Unity
         public int PlayStationUserID = 0;
 #endif
 
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         /// <summary>Is the speaker playing right now.</summary>
         public bool IsPlaying
@@ -50,10 +57,10 @@ namespace Photon.Voice.Unity
             get { return audioOutput != null && this.audioOutput.IsPlaying; }
         }
 
-        /// <summary>Smoothed difference between (jittering) stream and (clock-driven) audioOutput.</summary>
+        /// <summary>The current difference between positions in the buffer of (jittery) stream writer and (clock-driven) audio output reader in ms.</summary>
         public int Lag
         {
-            get { return this.IsPlaying ? this.audioOutput.Lag : -1; }
+            get { return this.audioOutput == null ? 0 : this.audioOutput.Lag; }
         }
 
         /// <summary>
@@ -99,8 +106,8 @@ namespace Photon.Voice.Unity
             set
             {
                 var l = value;
-                var h = value * 2;
-                var m = value * 5;
+                var h = value; // rely on automatic tolerance value
+                var m = 1000; // as in PlayDelayConfig.Default
                 if (this.playDelayConfig.Low != l || this.playDelayConfig.High != h || this.playDelayConfig.Max != m)
                 {
                     this.playDelayConfig.Low = l;
@@ -111,9 +118,9 @@ namespace Photon.Voice.Unity
             }
         }
 
-        #endregion
+#endregion
 
-        #region Private Methods
+#region Private Methods
 
         protected override void Awake()
         {
@@ -132,8 +139,8 @@ namespace Photon.Voice.Unity
         private void Initialize()
         {
             this.Logger.LogInfo("Initializing.");
-#if !UNITY_EDITOR && (UNITY_PS4 || UNITY_SHARLIN)
-            this.audioOutput = new Photon.Voice.PlayStation.PlayStationAudioOut(this.PlayStationUserID, CreateAudioOut);
+#if !UNITY_EDITOR && (UNITY_PS4 || UNITY_PS5)
+            this.audioOutput = new Photon.Voice.PlayStation.PlayStationAudioOut(this.PlayStationUserID);
 #else
             this.audioOutput = CreateAudioOut();
 #endif
@@ -142,7 +149,32 @@ namespace Photon.Voice.Unity
 
         protected virtual IAudioOut<float> CreateAudioOut()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR // allows non-WebGL workflow in Editor
+#if UNITY_2021_2_OR_NEWER // requires ES6
+            webOutAudioSource = this.GetComponent<AudioSource>();
+            double initSpatialBlend = webOutAudioSource != null ? webOutAudioSource.spatialBlend : 0;
+            webOut = new WebAudioAudioOut(this.playDelayConfig, initSpatialBlend, this.Logger, string.Empty, true);
+            if (initSpatialBlend > 0)
+            {
+                var al = FindObjectOfType<AudioListener>();
+                if (al != null)
+                {
+                    webOutListenerTransform = al.gameObject.transform;
+                }
+                else
+                {
+                    webOutListenerTransform = null;
+                }
+            }
+
+            return webOut;
+#else
+            this.Logger.LogError("Speaker requies Unity 2021.2 or newer for WebGL");
+            return new AudioOutDummy<float>();
+#endif
+#else
             return new UnityAudioOut(this.GetComponent<AudioSource>(), this.playDelayConfig, this.Logger, string.Empty, true);
+#endif
         }
 
         internal bool Link(RemoteVoiceLink stream)
@@ -200,7 +232,7 @@ namespace Photon.Voice.Unity
             return true;
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             this.Logger.LogInfo("OnDestroy");
             this.StopPlayback();
@@ -241,6 +273,35 @@ namespace Photon.Voice.Unity
             {
                 this.audioOutput.Service();
             }
+
+#if UNITY_WEBGL && UNITY_2021_2_OR_NEWER && !UNITY_EDITOR // requires ES6, allows non-WebGL workflow in Editor
+            // if AudioSource is available, update audio node with its parameters
+            if (webOutAudioSource != null)
+            {
+                webOut.SetVolume(webOutAudioSource.volume);
+
+                // spatialBlend is needed only in 3D mode
+                if (webOutListenerTransform != null)
+                {
+                    webOut.SetSpatialBlend(webOutAudioSource.spatialBlend);
+                }
+            }
+            // update audio listener
+            if (webOutListenerTransform != null)
+            {
+                var p = webOutListenerTransform.position;
+                var f = webOutListenerTransform.forward;
+                var u = webOutListenerTransform.up;
+                // Unity is left-handed, y-up
+                // WebAudio is right-hand, y-down
+                webOut.SetListenerPosition(p.x, -p.y, p.z);
+                webOut.SetListenerOrientation(f.x, -f.y, f.z, u.x, -u.y, u.z);
+
+                // Speaker position
+                p = gameObject.transform.position;
+                webOut.SetPosition(p.x, p.y, p.z);
+            }
+#endif
         }
 
         #endregion
@@ -274,7 +335,7 @@ namespace Photon.Voice.Unity
             }
         }
 
-        #endregion
+#endregion
     }
 }
 

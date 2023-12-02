@@ -30,6 +30,11 @@ public class HybridController : MonoBehaviour
         Vector3 dir = new Vector3(h, 0, v).normalized;
         CheckMovement(dir);
         CheckJump();
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+
+        }
     }
 
     void CheckMovement(Vector3 dir)
