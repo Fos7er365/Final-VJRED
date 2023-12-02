@@ -126,6 +126,40 @@ public class MasterManager : MonoBehaviourPunCallbacks
             character.Jump();
         }
     }
+
+    [PunRPC]
+    public void RequestShoot(Player client)
+    {
+        if(charactersDictionary.ContainsKey(client))
+        {
+            Debug.Log("Pido shoot");
+            var character = charactersDictionary[client];
+            //client.Shoot();
+        }
+    }
+
+    [PunRPC]
+    public void RequestShootAnim(Player client)
+    {
+        if (charactersDictionary.ContainsKey(client))
+        {
+            var character = charactersDictionary[client];
+            var view = character.gameObject.GetComponent<CharacterView>();
+            view.Anim.ShootAnimation(true);
+        }
+    }
+
+    [PunRPC]
+    public void RequestStopShootAnim(Player client)
+    {
+        if (charactersDictionary.ContainsKey(client))
+        {
+            var character = charactersDictionary[client];
+            var view = character.gameObject.GetComponent<CharacterView>();
+            view.Anim.ShootAnimation(false);
+        }
+    }
+
     public void RPCMaster(string name, params object[] p)
     {
         RPC(name, PhotonNetwork.MasterClient, p);
@@ -138,25 +172,33 @@ public class MasterManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void SetWinEvent(Player client)
     {
-            //RPC("LoadWinScene")
+        if(PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("LoadWinScene", client);
+        }
     }
 
     [PunRPC]
-    void SetGameOverEvent()
+    void SetGameOverEvent(Player client, int id)
     {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            var pv = PhotonView.Find(id);
+            pv.RPC("LoadGameOverScene", RpcTarget.Others);
+        }
         
     }
 
     [PunRPC]
     void LoadWinScene()
     {
-        SceneManager.LoadScene("Win");
+        PhotonNetwork.LoadLevel("Win");
     }
 
     [PunRPC]
     void LoadGameOverScene()
     {
-        SceneManager.LoadScene("Game_Over");
+        PhotonNetwork.LoadLevel("Game_Over");
     }
 
     #region Métodos de Remove Player/Model, hay que setearlos y eliminar al player en todos los clientes al morir

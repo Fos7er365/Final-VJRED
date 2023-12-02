@@ -83,5 +83,13 @@ public class CharacterModel : MonoBehaviourPun
         _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
         _rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
+
+    public void Shoot()
+    {
+        if(photonView.IsMine)
+        {
+            photonView.RPC("RequestShootGrenade", RpcTarget.MasterClient);
+        }
+    }
 }
 

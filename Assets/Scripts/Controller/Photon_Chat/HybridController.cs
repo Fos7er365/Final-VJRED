@@ -62,4 +62,15 @@ public class HybridController : MonoBehaviour
         MasterManager.Instance.RequestStopJumpAnim(PhotonNetwork.LocalPlayer);
 
     }
+
+    void CheckShoot()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("Request shoot");
+            MasterManager.Instance.RequestShoot(PhotonNetwork.LocalPlayer);
+            MasterManager.Instance.RequestShootAnim(PhotonNetwork.LocalPlayer);
+        }
+        MasterManager.Instance.RequestStopShootAnim(PhotonNetwork.LocalPlayer);
+    }
 }
