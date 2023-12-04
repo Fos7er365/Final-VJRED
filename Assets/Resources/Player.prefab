@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5276018156856413966}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.407, z: 0.319}
+  m_LocalPosition: {x: 0, y: 1.407, z: 0.473}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -55,7 +55,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5950476036306429281}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.407, z: 0.319}
+  m_LocalPosition: {x: 0, y: 1.407, z: 0.417}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -186,7 +186,7 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &1996834649112197334
@@ -260,11 +260,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 719ac32bc18c63d4ba583621be902c34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 20
   movementMultiplier: 2
-  jumpForce: 40
+  jumpForce: 60
   rotSpeed: 5
-  rbDrag: 2
+  rbDrag: 4
   cameraHolder: {fileID: 5950476036306429281}
   orientation: {fileID: 1550055265373020853}
   view: {fileID: 5946666056503722423}
@@ -278,7 +278,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
-  groundDistance: 1
+  groundDistance: 2
 --- !u!114 &5946666056503722423
 MonoBehaviour:
   m_ObjectHideFlags: 0
