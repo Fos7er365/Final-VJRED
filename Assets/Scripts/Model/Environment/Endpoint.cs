@@ -11,12 +11,10 @@ public class Endpoint : MonoBehaviourPun
         Debug.Log("Endpoint GO owner" + photonView.Owner);
         if (photonView.IsMine)
         {
-            Debug.Log("BUENAS!");
             if (other.tag == "Player")
             {
 
                 var pv = other.GetComponent<PhotonView>();
-                Debug.Log("Colisiono con" + pv.Owner);
                 //photonView.RPC("LoadGameOverScene", RpcTarget.Others);
                 //SetGameOverEvent(Player client, int id)
                 //MasterManager.Instance.RPCMaster("SetWinEvent", pv.Owner);

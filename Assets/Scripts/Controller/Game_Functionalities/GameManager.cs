@@ -28,10 +28,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void Awake()
     {
 
-        if (GameManagerInstance != null && GameManagerInstance != this)
-        {
-            Destroy(this);
-        }
+        if (GameManagerInstance != null && GameManagerInstance != this) Destroy(this);
         else
         {
             if (PhotonNetwork.IsMasterClient && Camera.main.gameObject != null) Destroy(Camera.main.gameObject);
@@ -41,17 +38,17 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private void Start()
-    {
-    }
-   
     private void Update()
     {
         if (isGameStarted)
         {
             UpdateGameTimer();
 
-            if (PhotonNetwork.IsMasterClient) WaitToSync();
+            if (PhotonNetwork.IsMasterClient)
+            {
+                WaitToSync();
+                CheckDefeatByTimeOut(timeLeft);
+            }
         }
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -97,6 +94,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         gameTimer.enabled = true;
         timeLeft -= Time.deltaTime;
+        
         HandleGameTimer(timeLeft);
     }
     public void HandleGameTimer(float currentTime)
@@ -120,7 +118,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         timeLeft = _timer;
     }
+    void CheckDefeatByTimeOut(float _timeLeft)
+    {
+        if(_timeLeft <= 0)
+        {
+            MasterManager.Instance.HandleTimerGameOverEvent();
+        }
 
+    }
     #endregion
 
     #region RPC's

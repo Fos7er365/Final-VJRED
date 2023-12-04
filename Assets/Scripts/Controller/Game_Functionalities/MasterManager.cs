@@ -24,14 +24,10 @@ public class MasterManager : MonoBehaviourPunCallbacks
         }
     }
 
-    //public Dictionary<Player, CharacterModel> CharactersDictionary { get => charactersDictionary; set => charactersDictionary = value; }
-
     private void Awake()
     {
         if (instance != null) Destroy(this);
         else instance = this;
-
-        //inst = GetComponent<Instantiator>();
 
     }
 
@@ -264,7 +260,10 @@ public class MasterManager : MonoBehaviourPunCallbacks
     {
         if(charactersDictionary.ContainsKey(client))
         {
+            var character = charactersDictionary[client];
             RPC("LoadWinScene", client);
+            Destroy(character.gameObject);
+            RemovePlayer(client);
         }
     }
 
@@ -273,9 +272,33 @@ public class MasterManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("LoadGameOverScene", RpcTarget.Others);
             photonView.RPC("DestroyGoalPoint", RpcTarget.All);
+            //photonView.RPC("LoadGameOverScene", RpcTarget.Others);
+            HandleTimerGameOverEvent();
         }
+    }
+
+    [PunRPC]
+    public void HandleTimerGameOverEvent()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+
+            var playersList = PhotonNetwork.PlayerList;
+            var players = PhotonNetwork.CurrentRoom.Players;
+
+            foreach (var p in playersList)
+            {
+                if (charactersDictionary.ContainsKey(p))
+                {
+                    var character = charactersDictionary[p];
+                    photonView.RPC("LoadGameOverScene", p);
+                    Destroy(character.gameObject);
+                    RemovePlayer(p);
+                }
+            }
+        }
+
     }
 
     [PunRPC]
