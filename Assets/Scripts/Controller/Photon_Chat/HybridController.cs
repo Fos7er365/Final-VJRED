@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Voice.PUN;
+
 public class HybridController : MonoBehaviour
 {
 
@@ -18,6 +20,8 @@ public class HybridController : MonoBehaviour
         //MasterManager.Instance.photonView.RPC("RequestConnectPlayer", PhotonNetwork.MasterClient, PhotonNetwork.LocalPlayer);
         MasterManager.Instance.RPC("RequestConnectPlayer", PhotonNetwork.LocalPlayer, PhotonNetwork.LocalPlayer);
         //MasterManager.Instance.RPC("SetCameraToPlayer", PhotonNetwork.LocalPlayer, PhotonNetwork.LocalPlayer);
+        PhotonNetwork.Instantiate("Voice Object", Vector3.zero, Quaternion.identity);
+        PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = false;
     }
     private void Update()
     {
@@ -33,7 +37,11 @@ public class HybridController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-
+            PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.T))
+        {
+            PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = false;
         }
     }
 
