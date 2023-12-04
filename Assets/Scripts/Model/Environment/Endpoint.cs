@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class Endpoint : MonoBehaviourPun
 {
-
     private void OnTriggerEnter(Collider other)
     {
         if (photonView.IsMine)
@@ -14,15 +13,18 @@ public class Endpoint : MonoBehaviourPun
             Debug.Log("BUENAS!");
             if (other.tag == "Player")
             {
+
                 var pv = other.GetComponent<PhotonView>();
                 Debug.Log("Colisiono con" + pv.Owner);
-                MasterManager.Instance.RPC("SetWinEvent", PhotonNetwork.MasterClient);
-                MasterManager.Instance.RPC("SetGameOverEvent", PhotonNetwork.MasterClient);
-                //photonView.RPC("DestroyBullet", photonView.Owner);
-                PhotonNetwork.Destroy(gameObject);
+                //MasterManager.Instance.RPCMaster("SetGameOverEvent", pv.Owner, pv.ViewID);
+                //photonView.RPC("LoadGameOverScene", RpcTarget.Others);
+                //SetGameOverEvent(Player client, int id)
+                MasterManager.Instance.RPCMaster("SetWinEvent", pv.Owner);
+                MasterManager.Instance.RPCMaster("RequestGoalPointDestroy");
+
             }
             //else photonView.RPC("Destroy", photonView.Owner);
-            else PhotonNetwork.Destroy(gameObject);
+            //else PhotonNetwork.Destroy(gameObject);
         }
     }
 

@@ -29,7 +29,7 @@ public class CharController : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
-        PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = false;
+        //PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = false;
 
         //PhotonNetwork.Instantiate("VoiceObject", Vector3.zero, Quaternion.identity);
     }
