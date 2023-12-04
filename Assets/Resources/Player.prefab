@@ -274,11 +274,11 @@ MonoBehaviour:
   shootPosition: {fileID: 4893674126050316594}
   grenadeLauncherGO: {fileID: 8685217644175711091}
   grenadeGO: {fileID: 7352814311369781774, guid: 04d345dbf03b5444fa0259ad60ad68ef, type: 3}
-  shootRange: 10
+  shootRange: 100
   groundMask:
     serializedVersion: 2
     m_Bits: 64
-  groundDistance: 2
+  groundDistance: 1
 --- !u!114 &5946666056503722423
 MonoBehaviour:
   m_ObjectHideFlags: 0

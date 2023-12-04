@@ -129,10 +129,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d03c3c518c21f64292f5f9d0a94490e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delay: 1.5
-  explosionForce: 20
-  radius: 20
+  delay: 5
+  explosionForce: 100
+  radius: 50
   effect: {fileID: 1000011128802252, guid: adaddd78f56b3014c9976efb38ed6c8f, type: 3}
+  grenadeLifetime: 2
 --- !u!114 &8305433573437133299
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ public class Grenade : MonoBehaviourPun
     public float explosionForce = 10f;
     public float radius = 10f;
     public GameObject effect;
+    public float grenadeLifetime = 2f;
 
 
     private void Start()
@@ -46,15 +47,8 @@ public class Grenade : MonoBehaviourPun
         }
         StartCoroutine(WaitToExplode());
         PhotonNetwork.Instantiate("PlasmaExplosionEffect", explosionPos, Quaternion.identity);
-        photonView.RPC("DestroyGrenadeFBX", PhotonNetwork.MasterClient);
+        photonView.RPC("DestroyGrenadeGO", RpcTarget.All);
 
-        //MasterManager.Instance.HandleRPC("InstantiateGrenadeFBX", explosionPos);
-
-    }
-
-    void InstantiateFBX(Vector3 _position)
-    {
-        Instantiate(effect, _position, Quaternion.identity);
     }
 
     IEnumerator WaitToExplode()
@@ -62,10 +56,15 @@ public class Grenade : MonoBehaviourPun
         yield return new WaitForSeconds(delay);
     }
 
-    [PunRPC]
-    void DestroyGrenadeFBX()
+    void InstantiateFBX(Vector3 _position)
     {
-        PhotonNetwork.Destroy(gameObject);
+        Instantiate(effect, _position, Quaternion.identity);
+    }
+
+    [PunRPC]
+    void DestroyGrenadeGO()
+    {
+        Destroy(gameObject);
     }
 
 }

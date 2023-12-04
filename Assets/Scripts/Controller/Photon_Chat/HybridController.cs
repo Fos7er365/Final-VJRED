@@ -85,8 +85,8 @@ public class HybridController : MonoBehaviour
             Debug.Log("Request shoot");
             //MasterManager.Instance.RPCMaster("RequestShoot", PhotonNetwork.LocalPlayer);
             //MasterManager.Instance.RPCMaster("RequestShootAnim", PhotonNetwork.LocalPlayer);
-            MasterManager.Instance.RequestShoot(/*"RequestShoot",*/ PhotonNetwork.LocalPlayer);
             MasterManager.Instance.RequestShootAnim(/*"RequestShootAnim",*/ PhotonNetwork.LocalPlayer);
+            MasterManager.Instance.RequestShoot(/*"RequestShoot",*/ PhotonNetwork.LocalPlayer);
             StartCoroutine(WaitToDisableShootAnim());
         }
     }

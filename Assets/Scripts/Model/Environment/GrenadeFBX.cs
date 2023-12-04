@@ -1,17 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class GrenadeFBX : MonoBehaviour
+public class GrenadeFBX : MonoBehaviourPun
 {
-    public float timeLeft = 2f;
+    public float effectLifeTime = 2f;
 
     void Update()
     {
-        timeLeft -= Time.deltaTime;
-        if (timeLeft <= 0.0f)
+        if (photonView.IsMine)
         {
-            Destroy(this.gameObject);
+            effectLifeTime -= Time.deltaTime;
+            if (effectLifeTime <= 0.0f)
+            {
+                photonView.RPC("DestroyGrenadeFBX", PhotonNetwork.MasterClient);
+            }
         }
+    }
+
+    [PunRPC]
+    void DestroyGrenadeFBX()
+    {
+        PhotonNetwork.Destroy(this.gameObject);
     }
 }
