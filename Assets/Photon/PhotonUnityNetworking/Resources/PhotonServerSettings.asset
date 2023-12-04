@@ -68,7 +68,9 @@ MonoBehaviour:
   - RequestStopShootAnim
   - DestroyGrenadeGO
   - RequestSetCameraPointerPosition
-  - HandleDestroy
+  - HandleGameOverEvent
+  - HandleExplosion
+  - HandleGameOverByTimerEvent
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

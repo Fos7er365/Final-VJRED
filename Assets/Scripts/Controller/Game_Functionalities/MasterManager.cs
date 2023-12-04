@@ -245,14 +245,24 @@ public class MasterManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void SetGameOverEvent(Player client, int id)
+    void SetGameOverEvent(Player client, int id) //Not used
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (charactersDictionary.ContainsKey(client))
         {
             //RPC("LoadGameOverScene", client);
 
             var pv = PhotonView.Find(id);
-            photonView.RPC("LoadGameOverScene", RpcTarget.All);
+            pv.RPC("LoadGameOverScene", RpcTarget.Others);
+        }
+
+    }
+
+    [PunRPC]
+    void HandleGameOverByTimerEvent()
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("LoadGameOverScene", RpcTarget.Others);
         }
 
     }
@@ -278,8 +288,6 @@ public class MasterManager : MonoBehaviourPunCallbacks
         {
             RPC("InstantiateGoal", client, sp);
         }
-        //var sp = GetRandomSpawnpoint();
-        //GameObject go = PhotonNetwork.Instantiate("GoalPoint", sp, Quaternion.identity);
     }
     [PunRPC]
     void InstantiateGoal(Vector3 sp)
@@ -287,11 +295,15 @@ public class MasterManager : MonoBehaviourPunCallbacks
         GameObject go = PhotonNetwork.Instantiate("GoalPoint", sp, Quaternion.identity);
     }
     [PunRPC]
-    void RequestGoalPointDestroy()
+    void HandleGameOverEvent()
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            photonView.RPC("LoadGameOverScene", RpcTarget.Others);
+
             photonView.RPC("DestroyGoalPoint", RpcTarget.All);
+
+            //RequestRemovePlayer();
             //if (GameObject.FindWithTag("GoalPoint") != null)
             //{
             //    var go = GameObject.FindWithTag("GoalPoint");
@@ -306,7 +318,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
         if(GameObject.FindWithTag("GoalPoint") != null)
         {
             var go = GameObject.FindWithTag("GoalPoint");
-            GameObject.Destroy(go);
+            GameObject.Destroy(go, 1f);
         }
         
     }
@@ -342,6 +354,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
         if (charactersDictionary.ContainsKey(client))
         {
             var character = charactersDictionary[client];
+            //PhotonNetwork.Destroy(character.gameObject);
             charactersDictionary.Remove(client);
             if (character != null)
                 clientsDictionary.Remove(character);

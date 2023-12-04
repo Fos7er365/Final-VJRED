@@ -13,6 +13,9 @@ public class Grenade : MonoBehaviourPun
     public GameObject effect;
     public LayerMask targetLayers;
     public float grenadeLifetime = 2f;
+    float explodeTimer = 0;
+
+    Rigidbody targetRb;
 
 
     private void Start()
@@ -38,34 +41,44 @@ public class Grenade : MonoBehaviourPun
         Collider[] colliders = Physics.OverlapSphere(explosionPos, radius, targetLayers);
         foreach (Collider hit in colliders)
         {
-            Rigidbody rb = hit.GetComponent<Rigidbody>();
+            targetRb = hit.GetComponent<Rigidbody>();
 
-            if (rb != null)
+            if (targetRb != null)
             {
-                rb.AddExplosionForce(explosionForce, explosionPos, radius, 3.0f, ForceMode.Impulse);
+                photonView.RPC("HandleExplosion", RpcTarget.MasterClient, explosionPos);
             }
+            PhotonNetwork.Instantiate("PlasmaExplosionEffect", explosionPos, Quaternion.identity);
+            photonView.RPC("DestroyGrenadeGO", RpcTarget.All);
+            WaitToExplode(explosionPos);
             Debug.Log(hit.name);
         }
-        StartCoroutine(WaitToExplode());
-        PhotonNetwork.Instantiate("PlasmaExplosionEffect", explosionPos, Quaternion.identity);
-        photonView.RPC("DestroyGrenadeGO", RpcTarget.All);
+        
 
     }
 
-    IEnumerator WaitToExplode()
+    void WaitToExplode(Vector3 pos)
     {
-        yield return new WaitForSeconds(delay);
+        explodeTimer += Time.deltaTime;
+        if (explodeTimer > delay)
+        {
+            explodeTimer = 0;
+        }
     }
-
     void InstantiateFBX(Vector3 _position)
     {
         Instantiate(effect, _position, Quaternion.identity);
     }
 
     [PunRPC]
+    void HandleExplosion(Vector3 pos)
+    {
+        targetRb.AddExplosionForce(explosionForce, pos, radius, 3.0f, ForceMode.Impulse);
+    }
+
+    [PunRPC]
     void DestroyGrenadeGO()
     {
-        Destroy(gameObject);
+        Destroy(gameObject, delay);
     }
 
 }
