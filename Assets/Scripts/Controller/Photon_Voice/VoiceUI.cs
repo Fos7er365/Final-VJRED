@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Voice.PUN;
+using Photon.Voice.Unity;
 
 public class VoiceUI : MonoBehaviourPun
 {
-    MicUI _micUI;
+    public Speaker speaker;
+    Mic_UI _micUI;
     void Start()
     {
         if (photonView.IsMine)
         {
-            _micUI = FindObjectOfType<MicUI>();
+            _micUI = FindObjectOfType<Mic_UI>();
+        }
+        else
+        {
+            FindObjectOfType<VoiceChatUI>().AddSpeaker(speaker, photonView.Owner);
         }
     }
 

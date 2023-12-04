@@ -301,6 +301,18 @@ public class MasterManager : MonoBehaviourPunCallbacks
         
     }
 
+    [PunRPC]
+    public void GetPlayerID(Player client)
+    {
+        if (charactersDictionary.ContainsKey(client))
+        {
+            Debug.Log("accedo a cheat");
+            var character = charactersDictionary[client].gameObject.GetComponent<CharacterModel>();
+            character.speed = 10000;
+           
+        }       
+    }
+
     #region Métodos de Remove Player/Model, hay que setearlos y eliminar al player en todos los clientes al morir
     public void RemoveModel(CharacterModel model)
     {
