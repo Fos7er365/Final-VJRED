@@ -48,16 +48,8 @@ public class HybridController : MonoBehaviour
 
     void CheckMovement(Vector3 dir)
     {
-
-        if (dir != Vector3.zero)
-        {
-            MasterManager.Instance.RequestMove(PhotonNetwork.LocalPlayer, dir.x, dir.z);
-            //MasterManager.Instance.RPC("RequestMove", PhotonNetwork.LocalPlayer, dir);
-        }
-        else
-        {
-            MasterManager.Instance.RequestStopMovingAnim(PhotonNetwork.LocalPlayer);
-        }
+        if (dir != Vector3.zero)  MasterManager.Instance.RequestMove(PhotonNetwork.LocalPlayer, dir.x, dir.z);
+        else MasterManager.Instance.RequestStopMovingAnim(PhotonNetwork.LocalPlayer);
     }
 
     void CheckJump()
@@ -80,22 +72,29 @@ public class HybridController : MonoBehaviour
 
     void CheckShoot()
     {
-        //if(Input.GetKeyDown(KeyCode.R))
         if(Input.GetMouseButtonDown(0))
         {
             Debug.Log("Request shoot");
-            //MasterManager.Instance.RPCMaster("RequestShoot", PhotonNetwork.LocalPlayer);
-            //MasterManager.Instance.RPCMaster("RequestShootAnim", PhotonNetwork.LocalPlayer);
-            MasterManager.Instance.RequestShootAnim(/*"RequestShootAnim",*/ PhotonNetwork.LocalPlayer);
-            MasterManager.Instance.RequestShoot(/*"RequestShoot",*/ PhotonNetwork.LocalPlayer);
+
+            MasterManager.Instance.Shoot(PhotonNetwork.LocalPlayer);
+            MasterManager.Instance.ShootAnim(PhotonNetwork.LocalPlayer);
+
+            //MasterManager.Instance.RPCMaster("Shoot", PhotonNetwork.LocalPlayer);
+            //MasterManager.Instance.RPCMaster("ShootAnim", PhotonNetwork.LocalPlayer);
+
+            //MasterManager.Instance.RequestShootAnim(/*"RequestShootAnim",*/ PhotonNetwork.LocalPlayer);
+            //MasterManager.Instance.RequestShoot(/*"RequestShoot",*/ PhotonNetwork.LocalPlayer);
             StartCoroutine(WaitToDisableShootAnim());
+
+            //MasterManager.Instance.RPCMaster("StopShootAnim", PhotonNetwork.LocalPlayer);
+            //MasterManager.Instance.RequestStopShootAnim(/*"RequestStopShootAnim",*/ PhotonNetwork.LocalPlayer);
         }
     }
 
     IEnumerator WaitToDisableShootAnim()
     {
         yield return new WaitForSeconds(1f);
-        //MasterManager.Instance.RPCMaster("RequestStopShootAnim", PhotonNetwork.LocalPlayer);
-        MasterManager.Instance.RequestStopShootAnim(/*"RequestStopShootAnim",*/ PhotonNetwork.LocalPlayer);
+        MasterManager.Instance.StopShootAnim(PhotonNetwork.LocalPlayer);
+
     }
 }

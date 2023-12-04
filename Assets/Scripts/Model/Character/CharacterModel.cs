@@ -61,7 +61,7 @@ public class CharacterModel : MonoBehaviourPun
         if(photonView.IsMine)
         {
             _rb.freezeRotation = true;
-            shootPosition = playerLook.Cam.transform;
+            //shootPosition = playerLook.Cam.transform;
         }
     }
 

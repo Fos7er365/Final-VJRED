@@ -160,6 +160,15 @@ public class MasterManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RequestShoot(Player client)
     {
+       if(PhotonNetwork.IsMasterClient)
+        {
+            RPC("Shoot", client);
+        }
+    }
+
+    [PunRPC]
+    public void Shoot(Player client)
+    {
         if (charactersDictionary.ContainsKey(client))
         {
             Debug.Log("Pido shoot");
@@ -168,9 +177,17 @@ public class MasterManager : MonoBehaviourPunCallbacks
         }
     }
 
-
     [PunRPC]
     public void RequestShootAnim(Player client)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            RPC("ShootAnim", client);
+        }
+    }
+
+    [PunRPC]
+    public void ShootAnim(Player client)
     {
         if (charactersDictionary.ContainsKey(client))
         {
@@ -183,6 +200,15 @@ public class MasterManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RequestStopShootAnim(Player client)
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            RPC("StopShootAnim", client);
+        }
+    }
+
+    [PunRPC]
+    public void StopShootAnim(Player client)
+    {
         if (charactersDictionary.ContainsKey(client))
         {
             var character = charactersDictionary[client];
@@ -192,6 +218,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
 
         }
     }
+
 
     [PunRPC]
     public void RequestSpawnGrenade(Player client)
@@ -230,13 +257,10 @@ public class MasterManager : MonoBehaviourPunCallbacks
 
     #endregion
 
-    //MasterManager.Instance.RPCMaster("SetWinEvent", pv.Owner);
-    //            MasterManager.Instance.RPCMaster("SetGameOverEvent", pv.Owner, pv.ViewID);
-
     #region Victory and Defeat events RPC
 
     [PunRPC]
-    void SetWinEvent(Player client)
+    public void SetWinEvent(Player client)
     {
         if(charactersDictionary.ContainsKey(client))
         {
@@ -245,36 +269,23 @@ public class MasterManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void SetGameOverEvent(Player client, int id) //Not used
+    public void HandleGameOverEvent()
     {
-        if (charactersDictionary.ContainsKey(client))
-        {
-            //RPC("LoadGameOverScene", client);
-
-            var pv = PhotonView.Find(id);
-            pv.RPC("LoadGameOverScene", RpcTarget.Others);
-        }
-
-    }
-
-    [PunRPC]
-    void HandleGameOverByTimerEvent()
-    {
-        if(PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
             photonView.RPC("LoadGameOverScene", RpcTarget.Others);
+            photonView.RPC("DestroyGoalPoint", RpcTarget.All);
         }
-
     }
 
     [PunRPC]
-    void LoadWinScene()
+    public void LoadWinScene()
     {
         PhotonNetwork.LoadLevel("Win");
     }
 
     [PunRPC]
-    void LoadGameOverScene()
+   public  void LoadGameOverScene()
     {
         PhotonNetwork.LoadLevel("Game_Over");
     }
@@ -294,23 +305,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
     {
         GameObject go = PhotonNetwork.Instantiate("GoalPoint", sp, Quaternion.identity);
     }
-    [PunRPC]
-    void HandleGameOverEvent()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            photonView.RPC("LoadGameOverScene", RpcTarget.Others);
-
-            photonView.RPC("DestroyGoalPoint", RpcTarget.All);
-
-            //RequestRemovePlayer();
-            //if (GameObject.FindWithTag("GoalPoint") != null)
-            //{
-            //    var go = GameObject.FindWithTag("GoalPoint");
-            //    PhotonNetwork.Destroy(go);
-            //}
-        }
-    }
+   
 
     [PunRPC]
     void DestroyGoalPoint()
@@ -360,6 +355,23 @@ public class MasterManager : MonoBehaviourPunCallbacks
                 clientsDictionary.Remove(character);
         }
     }
+    #endregion
+
+    #region Unused RPC's
+
+    //[PunRPC]
+    //void SetGameOverEvent(Player client, int id) //Not used
+    //{
+    //    if (charactersDictionary.ContainsKey(client))
+    //    {
+    //        //RPC("LoadGameOverScene", client);
+
+    //        var pv = PhotonView.Find(id);
+    //        pv.RPC("LoadGameOverScene", RpcTarget.Others);
+    //    }
+
+    //}
+
     //public Player GetClientFromModel(CharacterModel model)
     //{
     //if (_dicPlayer.ContainsKey(model))

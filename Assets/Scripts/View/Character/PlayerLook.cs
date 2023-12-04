@@ -47,10 +47,10 @@ public class PlayerLook : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            WaitToSendPositionToMaster();
             cam.position = orientation.position; //Era transform position
             cam.transform.forward = orientation.transform.forward;
             cam.transform.rotation = orientation.transform.rotation;
+            WaitToSendPositionToMaster();
 
             mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
             mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
@@ -77,7 +77,7 @@ public class PlayerLook : MonoBehaviourPun
         cursorFixTimer += Time.deltaTime;
         if (cursorFixTimer >= cursorFixMaxTimer)
         {
-            MasterManager.Instance.RPCMaster("RequestSetCameraPointerPosition", PhotonNetwork.LocalPlayer, cam.position);
+            MasterManager.Instance.RPCMaster("RequestSetCameraPointerPosition", PhotonNetwork.LocalPlayer, orientation.transform.position);
             cursorFixTimer = 0;
         }
     }

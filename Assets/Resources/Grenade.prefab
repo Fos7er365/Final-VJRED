@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 7879941347469731957}
   m_Layer: 0
   m_Name: Grenade
-  m_TagString: Untagged
+  m_TagString: Grenade
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 7352814311369781774}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.75, y: 8.5, z: 2.5}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -130,13 +130,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delay: 2
-  explosionForce: 20
+  explosionForce: 50
   radius: 50
   effect: {fileID: 1000011128802252, guid: adaddd78f56b3014c9976efb38ed6c8f, type: 3}
   targetLayers:
     serializedVersion: 2
     m_Bits: 72
-  grenadeLifetime: 2
 --- !u!114 &8305433573437133299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,4 +174,4 @@ MonoBehaviour:
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 1
-  m_TeleportIfDistanceGreaterThan: 2
+  m_TeleportIfDistanceGreaterThan: 1

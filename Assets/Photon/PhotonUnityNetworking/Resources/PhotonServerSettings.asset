@@ -72,6 +72,9 @@ MonoBehaviour:
   - HandleExplosion
   - HandleGameOverByTimerEvent
   - HandleDestroy
+  - Shoot
+  - ShootAnim
+  - StopShootAnim
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

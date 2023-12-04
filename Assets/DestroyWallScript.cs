@@ -10,7 +10,7 @@ public class DestroyWallScript : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            if (other.tag == "Player")
+            if (other.tag == "Player" && other.tag == "Grenade")
             {
                 photonView.RPC("HandleDestroy", PhotonNetwork.MasterClient);
             }

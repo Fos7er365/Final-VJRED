@@ -12,8 +12,6 @@ public class Grenade : MonoBehaviourPun
     public float radius = 10f;
     public GameObject effect;
     public LayerMask targetLayers;
-    public float grenadeLifetime = 2f;
-    float explodeTimer = 0;
 
     Rigidbody targetRb;
 
@@ -26,20 +24,6 @@ public class Grenade : MonoBehaviourPun
             StartCoroutine(WaitToExplode());
         }
     }
-
-    //private void Update()
-    //{
-    //    if(photonView.IsMine)
-    //    {
-
-    //    }
-    //}
-
-    //private void OnDrawGizmosSelected()
-    //{
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(transform.position, radius);
-    //}
 
     [PunRPC]
     private void Explode()
