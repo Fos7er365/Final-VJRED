@@ -148,7 +148,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
     #region Shoot Player Action RPC'S
 
     [PunRPC]
-    public void RequestSetCameraPointerPosition(Vector3 position, Player client)
+    public void RequestSetCameraPointerPosition(Player client, Vector3 position)
     {
         if(charactersDictionary.ContainsKey(client))
         {
