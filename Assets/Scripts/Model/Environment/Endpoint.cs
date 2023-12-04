@@ -19,7 +19,7 @@ public class Endpoint : MonoBehaviourPun
                 //photonView.RPC("LoadGameOverScene", RpcTarget.Others);
                 //SetGameOverEvent(Player client, int id)
                 MasterManager.Instance.RPCMaster("SetWinEvent", pv.Owner);
-                MasterManager.Instance.RPCMaster("HandleGameOverEvent");
+                MasterManager.Instance.RPCMaster("RequestGoalPointDestroy");
 
             }
             //else photonView.RPC("Destroy", photonView.Owner);
