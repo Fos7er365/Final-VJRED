@@ -44,7 +44,8 @@ public class MasterManager : MonoBehaviourPunCallbacks
             {
                 var character = charactersDictionary[otherPlayer];
                 RemovePlayer(otherPlayer);
-                PhotonNetwork.Destroy(character.gameObject);
+                //RemoveModel(character);
+                //PhotonNetwork.Destroy(character.gameObject);
             }
         }
     }
@@ -53,7 +54,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
     #region RPC'S
 
     [PunRPC]
-    public void RequestConanectPlayer(Player client)
+    public void RequestConnectPlayer(Player client)
     {
         GameObject go = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
         var character = go.GetComponent<CharacterModel>();
