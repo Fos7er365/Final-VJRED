@@ -65,12 +65,14 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 Debug.Log("Inicio juego");
                 photonView.RPC("StartGame", RpcTarget.All);
-                photonView.RPC("InstantiateGoal", PhotonNetwork.LocalPlayer);
+                var sp = GetRandomSpawnpoint();
+                MasterManager.Instance.RPCMaster("RequestInstantiateGoal", PhotonNetwork.LocalPlayer, sp.position);
             }
         }
-        
+
 
     }
+  
     public Transform GetRandomSpawnpoint()
     {
         return goalPointSpawnSeeds[UnityEngine.Random.Range(0, goalPointSpawnSeeds.Length - 1)];
@@ -121,12 +123,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region RPC's
-    [PunRPC]
-    void InstantiateGoal()
-    {
-        var sp = GetRandomSpawnpoint();
-        GameObject go = PhotonNetwork.Instantiate("GoalPoint", sp.position, Quaternion.identity);
-    }
 
     #endregion
 }

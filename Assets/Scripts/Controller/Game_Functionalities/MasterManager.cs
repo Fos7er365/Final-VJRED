@@ -11,8 +11,8 @@ using UnityEngine.SceneManagement;
 public class MasterManager : MonoBehaviourPunCallbacks
 {
     public GameManager gameManager;
-    Dictionary<Player, CharacterModel> charactersDictionary = new Dictionary<Player, CharacterModel>();
-    Dictionary<CharacterModel, Player> clientsDictionary = new Dictionary<CharacterModel, Player>();
+    Dictionary<Player, CharacterModel> charactersDictionary = new Dictionary<Player, CharacterModel>(); //dic servidor
+    Dictionary<CharacterModel, Player> clientsDictionary = new Dictionary<CharacterModel, Player>(); // dic local
     static MasterManager instance;
     //Instantiator inst;
 
@@ -36,13 +36,24 @@ public class MasterManager : MonoBehaviourPunCallbacks
     }
 
     #region Clients/Models Management
-   
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (charactersDictionary.ContainsKey(otherPlayer))
+            {
+                var character = charactersDictionary[otherPlayer];
+                RemovePlayer(otherPlayer);
+                PhotonNetwork.Destroy(character.gameObject);
+            }
+        }
+    }
     #endregion
 
     #region RPC'S
 
     [PunRPC]
-    public void RequestConnectPlayer(Player client)
+    public void RequestConanectPlayer(Player client)
     {
         GameObject go = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
         var character = go.GetComponent<CharacterModel>();
@@ -62,10 +73,13 @@ public class MasterManager : MonoBehaviourPunCallbacks
         gameManager.SetManager(character);
 
     }
+
+    #region Player Movement Actions RPC'S
+
     [PunRPC]
     public void RequestMove(Player client, float h, float v)
     {
-        if(charactersDictionary.ContainsKey(client))
+        if (charactersDictionary.ContainsKey(client))
         {
             var character = charactersDictionary[client];
             character.ControlDrag();
@@ -106,16 +120,6 @@ public class MasterManager : MonoBehaviourPunCallbacks
         }
     }
     [PunRPC]
-    public void RequestGroundCheck(Player client)
-    {
-        if (charactersDictionary.ContainsKey(client))
-        {
-            var character = charactersDictionary[client];
-            //character.LookDir(dir);
-            character.CheckGround();
-        }
-    }
-    [PunRPC]
     public void RequestJump(Player client)
     {
         if (charactersDictionary.ContainsKey(client))
@@ -126,6 +130,85 @@ public class MasterManager : MonoBehaviourPunCallbacks
             character.Jump();
         }
     }
+
+    [PunRPC]
+    public void RequestGroundCheck(Player client)
+    {
+        if (charactersDictionary.ContainsKey(client))
+        {
+            var character = charactersDictionary[client];
+            //character.LookDir(dir);
+            character.CheckGround();
+        }
+    }
+
+    #endregion
+
+    #region Shoot Player Action RPC'S
+
+    [PunRPC]
+    public void RequestShoot(Player client)
+    {
+        if (charactersDictionary.ContainsKey(client))
+        {
+            Debug.Log("Pido shoot");
+            var character = charactersDictionary[client];
+            character.Shoot();
+        }
+    }
+
+
+    [PunRPC]
+    public void RequestShootAnim(Player client)
+    {
+        if (charactersDictionary.ContainsKey(client))
+        {
+            var character = charactersDictionary[client];
+            var view = character.gameObject.GetComponent<CharacterView>();
+            view.Anim.ShootAnimation(true);
+        }
+    }
+
+    [PunRPC]
+    public void RequestStopShootAnim(Player client)
+    {
+        if (charactersDictionary.ContainsKey(client))
+        {
+            var character = charactersDictionary[client];
+            var view = character.gameObject.GetComponent<CharacterView>();
+            view.Anim.ShootAnimation(false);
+            character.CanShoot = true;
+
+        }
+    }
+
+    [PunRPC]
+    public void RequestSpawnGrenade(Player client)
+    {
+        if (charactersDictionary.ContainsKey(client))
+        {
+            Debug.Log("Pido shoot");
+            var character = charactersDictionary[client];
+            character.CanShoot = false;
+            character.SpawnGrenade();
+            //PhotonNetwork.Instantiate("GoalPoint", sp, Quaternion.identity);
+        }
+    }
+
+    //[PunRPC]
+    //void RequestInstantiateGoal(Player client, Vector3 sp)
+    //{
+    //    if (PhotonNetwork.IsMasterClient)
+    //    {
+    //        RPC("InstantiateGoal", client, sp);
+    //    }
+    //    //var sp = GetRandomSpawnpoint();
+    //    //GameObject go = PhotonNetwork.Instantiate("GoalPoint", sp, Quaternion.identity);
+    //}
+    #endregion
+
+    #region RPC'S Handlers
+
     public void RPCMaster(string name, params object[] p)
     {
         RPC(name, PhotonNetwork.MasterClient, p);
@@ -135,28 +218,87 @@ public class MasterManager : MonoBehaviourPunCallbacks
         photonView.RPC(name, target, p);
     }
 
+    #endregion
+
+    //MasterManager.Instance.RPCMaster("SetWinEvent", pv.Owner);
+    //            MasterManager.Instance.RPCMaster("SetGameOverEvent", pv.Owner, pv.ViewID);
+
+    #region Victory and Defeat events RPC
+
     [PunRPC]
     void SetWinEvent(Player client)
     {
-            //RPC("LoadWinScene")
+        if(charactersDictionary.ContainsKey(client))
+        {
+            RPC("LoadWinScene", client);
+        }
     }
 
     [PunRPC]
-    void SetGameOverEvent()
+    void SetGameOverEvent(Player client, int id)
     {
-        
+        if (PhotonNetwork.IsMasterClient)
+        {
+            //RPC("LoadGameOverScene", client);
+
+            var pv = PhotonView.Find(id);
+            photonView.RPC("LoadGameOverScene", RpcTarget.All);
+        }
+
     }
 
     [PunRPC]
     void LoadWinScene()
     {
-        SceneManager.LoadScene("Win");
+        PhotonNetwork.LoadLevel("Win");
     }
 
     [PunRPC]
     void LoadGameOverScene()
     {
-        SceneManager.LoadScene("Game_Over");
+        PhotonNetwork.LoadLevel("Game_Over");
+    }
+
+    #endregion
+
+    [PunRPC]
+    void RequestInstantiateGoal(Player client, Vector3 sp)
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            RPC("InstantiateGoal", client, sp);
+        }
+        //var sp = GetRandomSpawnpoint();
+        //GameObject go = PhotonNetwork.Instantiate("GoalPoint", sp, Quaternion.identity);
+    }
+    [PunRPC]
+    void InstantiateGoal(Vector3 sp)
+    {
+        GameObject go = PhotonNetwork.Instantiate("GoalPoint", sp, Quaternion.identity);
+    }
+    [PunRPC]
+    void RequestGoalPointDestroy()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("DestroyGoalPoint", RpcTarget.All);
+            //if (GameObject.FindWithTag("GoalPoint") != null)
+            //{
+            //    var go = GameObject.FindWithTag("GoalPoint");
+            //    PhotonNetwork.Destroy(go);
+            //}
+        }
+    }
+
+    [PunRPC]
+    void DestroyGoalPoint()
+    {
+        if(GameObject.FindWithTag("GoalPoint") != null)
+        {
+            var go = GameObject.FindWithTag("GoalPoint");
+            GameObject.Destroy(go);
+        }
+        
     }
 
     [PunRPC]
@@ -172,28 +314,28 @@ public class MasterManager : MonoBehaviourPunCallbacks
     }
 
     #region Métodos de Remove Player/Model, hay que setearlos y eliminar al player en todos los clientes al morir
-    //public void RemoveModel(CharacterModel model)
-    //{
-    //if (_dicPlayer.ContainsKey(model))
-    //{
-    //    var player = _dicPlayer[model];
-    //    photonView.RPC("RequestRemovePlayer", RpcTarget.All, player);
-    //}
-    //}
+    public void RemoveModel(CharacterModel model)
+    {
+        if (clientsDictionary.ContainsKey(model))
+        {
+            var player = clientsDictionary[model];
+            photonView.RPC("RequestRemovePlayer", RpcTarget.All, player);
+        }
+    }
     public void RemovePlayer(Player player)
     {
-        //photonView.RPC("RequestRemovePlayer", RpcTarget.All, player);
+        photonView.RPC("RequestRemovePlayer", RpcTarget.All, player);
     }
     [PunRPC]
     public void RequestRemovePlayer(Player client)
     {
-        //if (_dicChars.ContainsKey(client))
-        //{
-        //    var character = _dicChars[client];
-        //    _dicChars.Remove(client);
-        //    if (character != null)
-        //        _dicPlayer.Remove(character);
-        //}
+        if (charactersDictionary.ContainsKey(client))
+        {
+            var character = charactersDictionary[client];
+            charactersDictionary.Remove(client);
+            if (character != null)
+                clientsDictionary.Remove(character);
+        }
     }
     //public Player GetClientFromModel(CharacterModel model)
     //{

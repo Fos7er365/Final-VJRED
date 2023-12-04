@@ -11,9 +11,5 @@ public class TagManager : MonoBehaviour
     public const string CHARACTER_DAMAGE_ANIMATION_TAG = "isHit";
     public const string CHARACTER_DIE_ANIMATION_TAG = "isDead";
     public const string CHARACTER_ARMED_ANIMATION_TAG = "isArmed";
-    //public const string CHARACTER_CROUCH_ANIMATION_TAG = "isCharacterCrouch";
-    //public const string CHARACTER_CLIMB_WALL_ANIMATION_TAG = "isCharacterClimbWall";
-    //public const string CHARACTER_SLIDE_ANIMATION_TAG = "isCharacterSlide"; //Confirmar
-    //public const string CHARACTER_DASH_ANIMATION_TAG = "isCharacterDash";
     #endregion
 }
