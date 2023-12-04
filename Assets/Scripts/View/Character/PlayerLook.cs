@@ -77,7 +77,7 @@ public class PlayerLook : MonoBehaviourPun
         cursorFixTimer += Time.deltaTime;
         if (cursorFixTimer >= cursorFixMaxTimer)
         {
-            MasterManager.Instance.RPCMaster("RequestSetCameraPointerPosition", PhotonNetwork.MasterClient, PhotonNetwork.LocalPlayer, cam.position);
+            MasterManager.Instance.RPCMaster("RequestSetCameraPointerPosition", PhotonNetwork.LocalPlayer, cam.position);
             cursorFixTimer = 0;
         }
     }
