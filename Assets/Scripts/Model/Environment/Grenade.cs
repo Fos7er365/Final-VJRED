@@ -23,9 +23,17 @@ public class Grenade : MonoBehaviourPun
         if(photonView.IsMine)
         {
             Debug.Log("Instancio fbx explosion");
-            photonView.RPC("Explode", PhotonNetwork.MasterClient);
+            StartCoroutine(WaitToExplode());
         }
     }
+
+    //private void Update()
+    //{
+    //    if(photonView.IsMine)
+    //    {
+
+    //    }
+    //}
 
     //private void OnDrawGizmosSelected()
     //{
@@ -45,24 +53,29 @@ public class Grenade : MonoBehaviourPun
 
             if (targetRb != null)
             {
-                photonView.RPC("HandleExplosion", RpcTarget.MasterClient, explosionPos);
+                targetRb.AddExplosionForce(explosionForce, explosionPos, radius, 3.0f, ForceMode.Impulse);
+
+                //photonView.RPC("HandleExplosion", RpcTarget.MasterClient, explosionPos);
             }
             PhotonNetwork.Instantiate("PlasmaExplosionEffect", explosionPos, Quaternion.identity);
             photonView.RPC("DestroyGrenadeGO", RpcTarget.All);
-            WaitToExplode(explosionPos);
+            //WaitToExplode(explosionPos);
             Debug.Log(hit.name);
         }
         
 
     }
 
-    void WaitToExplode(Vector3 pos)
+    IEnumerator WaitToExplode()
     {
-        explodeTimer += Time.deltaTime;
-        if (explodeTimer > delay)
-        {
-            explodeTimer = 0;
-        }
+        yield return new WaitForSeconds(delay);
+        photonView.RPC("Explode", PhotonNetwork.MasterClient);
+
+        //explodeTimer += Time.deltaTime;
+        //if (explodeTimer > delay)
+        //{
+        //    explodeTimer = 0;
+        //}
     }
     void InstantiateFBX(Vector3 _position)
     {

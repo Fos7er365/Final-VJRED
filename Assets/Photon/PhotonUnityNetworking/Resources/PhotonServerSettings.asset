@@ -71,6 +71,7 @@ MonoBehaviour:
   - HandleGameOverEvent
   - HandleExplosion
   - HandleGameOverByTimerEvent
+  - SetCameraPointerPosition
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
