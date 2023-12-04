@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class CharacterModel : MonoBehaviourPun
 {
-    public float speed, movementMultiplier, jumpForce;
+    public float speed, movementMultiplier, jumpForce, gravity;
     public float rotSpeed, rbDrag;
     public GameObject cameraHolder;
     public Transform orientation;
@@ -75,6 +75,8 @@ public class CharacterModel : MonoBehaviourPun
         view.Anim.RunAnimation(true);
         movementDirection = orientation.forward * v + orientation.right * h;
         _rb.AddForce(movementDirection.normalized * speed * movementMultiplier, ForceMode.Force);
+
+
 
         var CharacterRotation = orientation.transform.rotation;
         CharacterRotation.x = 0;
