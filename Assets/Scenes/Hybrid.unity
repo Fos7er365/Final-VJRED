@@ -591,6 +591,7 @@ MonoBehaviour:
   gameTimer: {fileID: 1824162212}
   goalPointSpawnSeeds:
   - {fileID: 929280582}
+  timeLeft: 5
 --- !u!4 &715996215
 Transform:
   m_ObjectHideFlags: 0

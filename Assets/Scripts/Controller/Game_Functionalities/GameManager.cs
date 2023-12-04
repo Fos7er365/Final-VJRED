@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] TextMeshProUGUI gameTimer;
     [SerializeField] Transform[] goalPointSpawnSeeds;
 
-    float timeLeft = 200, syncTimer = 0, timeToSync = 3f;
+    [SerializeField] float timeLeft = 200;
+    float syncTimer = 0, timeToSync = 3f;
 
     bool isGameStarted;
     bool isVictory = false, isDefeat = false;
@@ -97,6 +98,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         gameTimer.enabled = true;
         timeLeft -= Time.deltaTime;
         HandleGameTimer(timeLeft);
+        //if(timeLeft <= 0)
+        //{
+            //timeLeft = 0;
+            //MasterManager.Instance.RPCMaster("HandleGameOverByTimerEvent");
+        //}
     }
     public void HandleGameTimer(float currentTime)
     {
@@ -104,6 +110,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         var minutes = Mathf.FloorToInt(currentTime / 60);
         var seconds = Mathf.FloorToInt(currentTime % 60);
         gameTimer.text = String.Format("{0:00}:{1:00} ", minutes, seconds);
+        //if (currentTime <= 0) currentTime = 0;
     }
     void WaitToSync()
     {

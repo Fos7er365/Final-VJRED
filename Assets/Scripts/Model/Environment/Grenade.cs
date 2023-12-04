@@ -15,6 +15,8 @@ public class Grenade : MonoBehaviourPun
     public float grenadeLifetime = 2f;
     float explodeTimer = 0;
 
+    Rigidbody targetRb;
+
 
     private void Start()
     {
@@ -39,13 +41,11 @@ public class Grenade : MonoBehaviourPun
         Collider[] colliders = Physics.OverlapSphere(explosionPos, radius, targetLayers);
         foreach (Collider hit in colliders)
         {
-            Rigidbody rb = hit.GetComponent<Rigidbody>();
+            targetRb = hit.GetComponent<Rigidbody>();
 
-            if (rb != null)
+            if (targetRb != null)
             {
-                rb.AddExplosionForce(explosionForce, explosionPos, radius, 3.0f, ForceMode.Impulse);
-
-
+                photonView.RPC("HandleExplosion", RpcTarget.MasterClient, explosionPos);
             }
             PhotonNetwork.Instantiate("PlasmaExplosionEffect", explosionPos, Quaternion.identity);
             photonView.RPC("DestroyGrenadeGO", RpcTarget.All);
@@ -67,6 +67,12 @@ public class Grenade : MonoBehaviourPun
     void InstantiateFBX(Vector3 _position)
     {
         Instantiate(effect, _position, Quaternion.identity);
+    }
+
+    [PunRPC]
+    void HandleExplosion(Vector3 pos)
+    {
+        targetRb.AddExplosionForce(explosionForce, pos, radius, 3.0f, ForceMode.Impulse);
     }
 
     [PunRPC]
