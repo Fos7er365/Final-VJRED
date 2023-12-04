@@ -68,6 +68,11 @@ public class CharacterModel : MonoBehaviourPun
         view.Anim.RunAnimation(true);
         movementDirection = orientation.forward * v + orientation.right * h;
         _rb.AddForce(movementDirection.normalized * speed * movementMultiplier, ForceMode.Force);
+
+        var CharacterRotation = orientation.transform.rotation;
+        CharacterRotation.x = 0;
+        CharacterRotation.z = 0;
+        transform.rotation = CharacterRotation;
     }
 
     public void LookDir(Vector3 dir)

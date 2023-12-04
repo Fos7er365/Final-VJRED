@@ -14,7 +14,7 @@ public class ChatPhoton : MonoBehaviour, IChatClientListener
     ChatClient _chatClient;
 
     string _command = "w/";
-    string cheat = "s/";
+    string cheat = "/s";
 
     string _channel;
     private void Start()
@@ -43,18 +43,19 @@ public class ChatPhoton : MonoBehaviour, IChatClientListener
 
         if(words.Length > 2 && words[0] == _command)
         {
-            var target = words[1];
-            foreach(var currPlayer in PhotonNetwork.PlayerList)
-            {
-                if (target == currPlayer.NickName)
-                {
-                    var currMessage = string.Join(" ", words, 2, words.Length - 2);
-                    _chatClient.SendPrivateMessage(target, currMessage);
-                    return;
-                }
-            }
-            content.text += "<color=pink>" + "No existe gilazo" + "</color>" + "\n";
-            inputField.text = "";
+            Debug.Log("Accedo a dm");
+            //var target = words[1];
+            //foreach(var currPlayer in PhotonNetwork.PlayerList)
+            //{
+            //    if (target == currPlayer.NickName)
+            //    {
+            //        var currMessage = string.Join(" ", words, 2, words.Length - 2);
+            //        _chatClient.SendPrivateMessage(target, currMessage);
+            //        return;
+            //    }
+            //}
+            //content.text += "<color=pink>" + "No existe gilazo" + "</color>" + "\n";
+            //inputField.text = "";
         }
         else
         {
@@ -64,6 +65,8 @@ public class ChatPhoton : MonoBehaviour, IChatClientListener
 
         if(words.Length > 2 && words[0] == cheat)
         {
+            Debug.Log("chat cheat");
+            MasterManager.Instance.RPC("GetPlayerID", PhotonNetwork.LocalPlayer);
             //CharacterController player = FindObjectOfType<Character>();
             //player
         }
