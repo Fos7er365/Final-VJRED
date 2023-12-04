@@ -16,7 +16,6 @@ public class Endpoint : MonoBehaviourPun
 
                 var pv = other.GetComponent<PhotonView>();
                 Debug.Log("Colisiono con" + pv.Owner);
-                //MasterManager.Instance.RPCMaster("SetGameOverEvent", pv.Owner, pv.ViewID);
                 //photonView.RPC("LoadGameOverScene", RpcTarget.Others);
                 //SetGameOverEvent(Player client, int id)
                 MasterManager.Instance.RPCMaster("SetWinEvent", pv.Owner);

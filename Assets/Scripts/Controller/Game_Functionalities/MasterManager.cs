@@ -247,12 +247,12 @@ public class MasterManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void SetGameOverEvent(Player client, int id)
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (charactersDictionary.ContainsKey(client))
         {
             //RPC("LoadGameOverScene", client);
 
             var pv = PhotonView.Find(id);
-            photonView.RPC("LoadGameOverScene", RpcTarget.All);
+            pv.RPC("LoadGameOverScene", RpcTarget.Others);
         }
 
     }
@@ -291,6 +291,8 @@ public class MasterManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            photonView.RPC("LoadGameOverScene", RpcTarget.Others);
+
             photonView.RPC("DestroyGoalPoint", RpcTarget.All);
             //if (GameObject.FindWithTag("GoalPoint") != null)
             //{
@@ -306,7 +308,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
         if(GameObject.FindWithTag("GoalPoint") != null)
         {
             var go = GameObject.FindWithTag("GoalPoint");
-            GameObject.Destroy(go);
+            GameObject.Destroy(go, 1f);
         }
         
     }

@@ -67,6 +67,7 @@ MonoBehaviour:
   - RequestSpawnGrenade
   - RequestStopShootAnim
   - DestroyGrenadeGO
+  - RequestSetCameraPointerPosition
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

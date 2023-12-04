@@ -239,11 +239,10 @@ MonoBehaviour:
   isGrounded: 0
   groundedTest: 0
   cd: 3
-  playerLook: {fileID: -8904406019317675202}
   shootPosition: {fileID: 4893674126050316594}
   grenadeLauncherGO: {fileID: 8685217644175711091}
   grenadeGO: {fileID: 7352814311369781774, guid: 04d345dbf03b5444fa0259ad60ad68ef, type: 3}
-  shootRange: 100
+  shootRange: 10
   groundMask:
     serializedVersion: 2
     m_Bits: 64
@@ -288,6 +287,7 @@ MonoBehaviour:
   sensX: 300
   sensY: 300
   orientation: {fileID: 1550055265373020853}
+  cursorFixMaxTimer: 2
 --- !u!114 &-6933184800893727682
 MonoBehaviour:
   m_ObjectHideFlags: 0
