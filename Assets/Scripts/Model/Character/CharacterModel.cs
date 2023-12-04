@@ -24,6 +24,7 @@ public class CharacterModel : MonoBehaviourPun
     [SerializeField] GameObject grenadeLauncherGO;
     [SerializeField] GameObject grenadeGO;
     [SerializeField] float shootRange;
+    PlayerLook playerLook;
     bool canShoot;
 
 
@@ -42,11 +43,16 @@ public class CharacterModel : MonoBehaviourPun
     }
 
     public bool CanShoot { get => canShoot; set => canShoot = value; }
+    public PlayerLook PlayerLook { get => playerLook; set => playerLook = value; }
+    public Transform ShootPosition { get => shootPosition; set => shootPosition = value; }
 
     private void Awake()
     {
         if (photonView.IsMine)
+        {
             _rb = GetComponent<Rigidbody>();
+            playerLook = GetComponent<PlayerLook>();
+        }
     }
 
     // Start is called before the first frame update
@@ -55,6 +61,7 @@ public class CharacterModel : MonoBehaviourPun
         if(photonView.IsMine)
         {
             _rb.freezeRotation = true;
+            shootPosition = playerLook.Cam.transform;
         }
     }
 
@@ -108,7 +115,7 @@ public class CharacterModel : MonoBehaviourPun
 
     public void SpawnGrenade()
     {
-        GameObject go = PhotonNetwork.Instantiate("Grenade", shootPosition.transform.position, shootPosition.transform.rotation);
+        GameObject go = PhotonNetwork.Instantiate("Grenade", shootPosition.position, Quaternion.identity);
         //PhotonNetwork.Instantiate("Grenade", spawnPoint.position, spawnPoint.rotation);
         go.GetComponent<Rigidbody>().AddForce(go.transform.forward * shootRange, ForceMode.Impulse);
         canShoot = false;

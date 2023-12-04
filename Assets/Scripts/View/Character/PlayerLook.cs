@@ -22,6 +22,11 @@ public class PlayerLook : MonoBehaviourPun
     float xRotation;
     float yRotation;
 
+    float cursorFixTimer;
+    [SerializeField]float cursorFixMaxTimer;
+
+    public Transform Cam { get => cam; set => cam = value; }
+
     private void Awake()
     {
 
@@ -42,6 +47,7 @@ public class PlayerLook : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
+            WaitToSendPositionToMaster();
             cam.position = orientation.position; //Era transform position
             cam.transform.forward = orientation.transform.forward;
             cam.transform.rotation = orientation.transform.rotation;
@@ -65,4 +71,17 @@ public class PlayerLook : MonoBehaviourPun
 
         }
     }
+
+    public void WaitToSendPositionToMaster()
+    {
+        cursorFixTimer += Time.deltaTime;
+        if (cursorFixTimer >= cursorFixMaxTimer)
+        {
+            MasterManager.Instance.RPCMaster("RequestSetCameraPointerPosition", PhotonNetwork.MasterClient, PhotonNetwork.LocalPlayer, cam.position);
+            cursorFixTimer = 0;
+        }
+    }
+
+
+
 }

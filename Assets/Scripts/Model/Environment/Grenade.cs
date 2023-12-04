@@ -11,6 +11,7 @@ public class Grenade : MonoBehaviourPun
     public float explosionForce = 10f;
     public float radius = 10f;
     public GameObject effect;
+    public LayerMask targetLayers;
     public float grenadeLifetime = 2f;
 
 
@@ -34,7 +35,7 @@ public class Grenade : MonoBehaviourPun
     {
 
         Vector3 explosionPos = transform.position;
-        Collider[] colliders = Physics.OverlapSphere(explosionPos, radius);
+        Collider[] colliders = Physics.OverlapSphere(explosionPos, radius, targetLayers);
         foreach (Collider hit in colliders)
         {
             Rigidbody rb = hit.GetComponent<Rigidbody>();

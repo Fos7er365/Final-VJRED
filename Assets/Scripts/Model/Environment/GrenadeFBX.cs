@@ -13,7 +13,7 @@ public class GrenadeFBX : MonoBehaviourPun
         {
             effectLifeTime -= Time.deltaTime;
             if (effectLifeTime <= 0.0f)
-            {
+            { 
                 photonView.RPC("DestroyGrenadeFBX", PhotonNetwork.MasterClient);
             }
         }

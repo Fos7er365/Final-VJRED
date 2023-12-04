@@ -80,7 +80,8 @@ public class HybridController : MonoBehaviour
 
     void CheckShoot()
     {
-        if(Input.GetKeyDown(KeyCode.R))
+        //if(Input.GetKeyDown(KeyCode.R))
+        if(Input.GetMouseButtonDown(0))
         {
             Debug.Log("Request shoot");
             //MasterManager.Instance.RPCMaster("RequestShoot", PhotonNetwork.LocalPlayer);

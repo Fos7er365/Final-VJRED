@@ -148,6 +148,16 @@ public class MasterManager : MonoBehaviourPunCallbacks
     #region Shoot Player Action RPC'S
 
     [PunRPC]
+    public void RequestSetCameraPointerPosition(Vector3 position, Player client)
+    {
+        if(charactersDictionary.ContainsKey(client))
+        {
+            var character = charactersDictionary[client];
+            character.ShootPosition.position = position;
+        }
+    }
+
+    [PunRPC]
     public void RequestShoot(Player client)
     {
         if (charactersDictionary.ContainsKey(client))
@@ -192,7 +202,6 @@ public class MasterManager : MonoBehaviourPunCallbacks
             var character = charactersDictionary[client];
             character.CanShoot = false;
             character.SpawnGrenade();
-            //PhotonNetwork.Instantiate("GoalPoint", sp, Quaternion.identity);
         }
     }
 

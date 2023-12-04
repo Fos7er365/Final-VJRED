@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 896161209886860366}
   - component: {fileID: 1964190542281382733}
   - component: {fileID: 2219845281052487600}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -239,6 +239,7 @@ MonoBehaviour:
   isGrounded: 0
   groundedTest: 0
   cd: 3
+  playerLook: {fileID: -8904406019317675202}
   shootPosition: {fileID: 4893674126050316594}
   grenadeLauncherGO: {fileID: 8685217644175711091}
   grenadeGO: {fileID: 7352814311369781774, guid: 04d345dbf03b5444fa0259ad60ad68ef, type: 3}
