@@ -58,8 +58,8 @@ public class PlayerLook : MonoBehaviourPun
             xRotation -= mouseY; // * sensY * multiplier;
             yRotation += mouseX; // * sensX * multiplier;
 
-            xRotation = Mathf.Clamp(xRotation, -9f, 90f);
-            //yRotation = Mathf.Clamp(yRotation, -60f, 60f);
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+            yRotation = Mathf.Clamp(yRotation, -90f, 90f);
 
             cam.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
             orientation.transform.rotation = Quaternion.Euler(0, yRotation, 0);

@@ -48,8 +48,6 @@ public class CharController : MonoBehaviourPun
         Vector3 dir = new Vector3(horizontalInput, 0, verticalInput).normalized;
         if (dir != Vector3.zero)
         {
-            //charModel.LookDir(dir);
-            //charModel.ControlDrag();
             charModel.Move(horizontalInput, verticalInput);
         }
     }

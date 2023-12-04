@@ -228,9 +228,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 719ac32bc18c63d4ba583621be902c34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
-  movementMultiplier: 2
-  jumpForce: 60
+  speed: 30
+  movementMultiplier: 2.5
+  jumpForce: 80
   rotSpeed: 5
   rbDrag: 4
   cameraHolder: {fileID: 5950476036306429281}
@@ -239,7 +239,6 @@ MonoBehaviour:
   isGrounded: 0
   groundedTest: 0
   cd: 3
-  playerLook: {fileID: -8904406019317675202}
   shootPosition: {fileID: 4893674126050316594}
   grenadeLauncherGO: {fileID: 8685217644175711091}
   grenadeGO: {fileID: 7352814311369781774, guid: 04d345dbf03b5444fa0259ad60ad68ef, type: 3}
@@ -288,6 +287,7 @@ MonoBehaviour:
   sensX: 300
   sensY: 300
   orientation: {fileID: 1550055265373020853}
+  cursorFixMaxTimer: 0
 --- !u!114 &-6933184800893727682
 MonoBehaviour:
   m_ObjectHideFlags: 0
