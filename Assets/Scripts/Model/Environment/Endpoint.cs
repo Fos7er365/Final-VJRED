@@ -16,13 +16,15 @@ public class Endpoint : MonoBehaviourPun
 
                 var pv = other.GetComponent<PhotonView>();
                 Debug.Log("Colisiono con" + pv.Owner);
-                MasterManager.Instance.RPC("SetWinEvent", pv.Owner);
-                MasterManager.Instance.RPC("SetGameOverEvent", pv.Owner, pv.ViewID);
-                PhotonNetwork.Destroy(gameObject);
+                //MasterManager.Instance.RPCMaster("SetGameOverEvent", pv.Owner, pv.ViewID);
+                //photonView.RPC("LoadGameOverScene", RpcTarget.Others);
+                //SetGameOverEvent(Player client, int id)
+                MasterManager.Instance.RPCMaster("SetWinEvent", pv.Owner);
+                MasterManager.Instance.RPCMaster("RequestGoalPointDestroy");
 
             }
             //else photonView.RPC("Destroy", photonView.Owner);
-            else PhotonNetwork.Destroy(gameObject);
+            //else PhotonNetwork.Destroy(gameObject);
         }
     }
 

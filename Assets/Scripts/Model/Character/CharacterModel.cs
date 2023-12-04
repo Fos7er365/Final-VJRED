@@ -19,6 +19,14 @@ public class CharacterModel : MonoBehaviourPun
     public float cd;
     float lastJump;
 
+    [Header("Attack variables and components")]
+    [SerializeField] Transform shootPosition;
+    [SerializeField] GameObject grenadeLauncherGO;
+    [SerializeField] GameObject grenadeGO;
+    [SerializeField] float shootRange;
+    bool canShoot;
+
+
     [Header("Ground Detection")]
     [SerializeField] LayerMask groundMask;
     [SerializeField] float groundDistance = 10f;
@@ -32,6 +40,9 @@ public class CharacterModel : MonoBehaviourPun
             gameManagerInstance = value;
         }
     }
+
+    public bool CanShoot { get => canShoot; set => canShoot = value; }
+
     private void Awake()
     {
         if (photonView.IsMine)
@@ -87,9 +98,16 @@ public class CharacterModel : MonoBehaviourPun
     public void Shoot()
     {
         if(photonView.IsMine)
-        {
-            photonView.RPC("RequestShootGrenade", RpcTarget.MasterClient);
-        }
+            MasterManager.Instance.RPCMaster("RequestSpawnGrenade", photonView.Owner);
+    }
+
+    public void SpawnGrenade()
+    {
+        GameObject go = PhotonNetwork.Instantiate("Grenade", shootPosition.transform.position, shootPosition.transform.rotation);
+        //PhotonNetwork.Instantiate("Grenade", spawnPoint.position, spawnPoint.rotation);
+        go.GetComponent<Rigidbody>().AddForce(go.transform.forward * shootRange, ForceMode.Impulse);
+        canShoot = false;
     }
 }
+
 
