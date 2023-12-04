@@ -6,8 +6,25 @@ using UnityEngine;
 
 public class CharacterView : MonoBehaviourPun
 {
-    [SerializeField] CharacterAnimations anim;
+    CharacterAnimations anim;
 
     public CharacterAnimations Anim { get => anim; set => anim = value; }
 
+    private void Awake()
+    {
+        if(photonView.IsMine)
+        {
+            anim = GetComponent<CharacterAnimations>();
+        }
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 }

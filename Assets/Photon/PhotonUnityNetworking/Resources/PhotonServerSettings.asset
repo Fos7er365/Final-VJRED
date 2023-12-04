@@ -58,14 +58,6 @@ MonoBehaviour:
   - RequestShoot
   - RequestShootAnim
   - RequestStopShootAnim
-  - DestroyGoalPoint
-  - RequestGoalPointDestroy
-  - RequestInstantiateGoal
-  - RequestSpawnGrenade
-  - Explode
-  - DestroyExplosionFBX
-  - DestroyGrenadeFBX
-  - RequestConanectPlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

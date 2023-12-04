@@ -30,7 +30,11 @@ public class HybridController : MonoBehaviour
         Vector3 dir = new Vector3(h, 0, v).normalized;
         CheckMovement(dir);
         CheckJump();
-        CheckShoot();
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+
+        }
     }
 
     void CheckMovement(Vector3 dir)
@@ -54,34 +58,19 @@ public class HybridController : MonoBehaviour
             Debug.Log("Intento Jump");
             MasterManager.Instance.RequestJump(PhotonNetwork.LocalPlayer);
             MasterManager.Instance.RequestJumpAnim(PhotonNetwork.LocalPlayer);
-            StartCoroutine(WaitToDisableJumpAnim());
         }
-
-    }
-
-    IEnumerator WaitToDisableJumpAnim()
-    {
-        yield return new WaitForSeconds(1f);
         MasterManager.Instance.RequestStopJumpAnim(PhotonNetwork.LocalPlayer);
+
     }
 
     void CheckShoot()
     {
-        if(Input.GetKeyDown(KeyCode.R))
+        if(Input.GetMouseButtonDown(0))
         {
             Debug.Log("Request shoot");
-            //MasterManager.Instance.RPCMaster("RequestShoot", PhotonNetwork.LocalPlayer);
-            //MasterManager.Instance.RPCMaster("RequestShootAnim", PhotonNetwork.LocalPlayer);
-            MasterManager.Instance.RequestShoot(/*"RequestShoot",*/ PhotonNetwork.LocalPlayer);
-            MasterManager.Instance.RequestShootAnim(/*"RequestShootAnim",*/ PhotonNetwork.LocalPlayer);
-            StartCoroutine(WaitToDisableShootAnim());
+            MasterManager.Instance.RequestShoot(PhotonNetwork.LocalPlayer);
+            MasterManager.Instance.RequestShootAnim(PhotonNetwork.LocalPlayer);
         }
-    }
-
-    IEnumerator WaitToDisableShootAnim()
-    {
-        yield return new WaitForSeconds(1f);
-        //MasterManager.Instance.RPCMaster("RequestStopShootAnim", PhotonNetwork.LocalPlayer);
-        MasterManager.Instance.RequestStopShootAnim(/*"RequestStopShootAnim",*/ PhotonNetwork.LocalPlayer);
+        MasterManager.Instance.RequestStopShootAnim(PhotonNetwork.LocalPlayer);
     }
 }
