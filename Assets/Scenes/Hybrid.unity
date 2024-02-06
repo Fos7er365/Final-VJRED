@@ -584,7 +584,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameTimer: {fileID: 1824162212}
   goalPointSpawnSeeds:
-  - {fileID: 1365887008}
+  - {fileID: 460949781}
+  - {fileID: 294193679}
+  - {fileID: 1244062291}
+  - {fileID: 878129280}
   timeLeft: 200
 --- !u!4 &715996215
 Transform:

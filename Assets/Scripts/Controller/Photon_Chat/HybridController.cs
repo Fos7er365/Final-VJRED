@@ -26,7 +26,7 @@ public class HybridController : MonoBehaviour
     private void Update()
     {
 
-        MasterManager.Instance.RequestGroundCheck(PhotonNetwork.LocalPlayer);
+        MasterManager.Instance.RequestGroundCheck(PhotonNetwork.LocalPlayer); //reproducir desde master client desde el model
         
         var h = Input.GetAxisRaw("Horizontal");
         var v = Input.GetAxisRaw("Vertical");

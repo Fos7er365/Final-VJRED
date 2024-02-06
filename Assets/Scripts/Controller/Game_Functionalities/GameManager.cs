@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Debug.Log("Inicio juego");
                 photonView.RPC("StartGame", RpcTarget.All);
                 var sp = GetRandomSpawnpoint();
-                MasterManager.Instance.RPCMaster("RequestInstantiateGoal", PhotonNetwork.LocalPlayer, sp.position);
+                MasterManager.Instance.RPCMaster("RequestInstantiateGoal", PhotonNetwork.LocalPlayer, sp.position);//Instanciar directamente desde el servidor
             }
         }
 
